@@ -16,7 +16,7 @@
 ###
 # VS/MD solution and project files
 ###
-[Ee]xportedObj/
+**/[Ee]xportedObj/*
 *.booproj
 *.csproj
 *.sln
