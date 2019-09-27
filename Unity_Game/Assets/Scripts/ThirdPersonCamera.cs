@@ -37,6 +37,7 @@ public class ThirdPersonCamera : MonoBehaviour
        // transform.eulerAngles = CurrentRotation;
 
         transform.position = player.position - transform.forward * DistanceFromPlayer;
+        transform.LookAt(player.transform);
     }
 
 

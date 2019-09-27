@@ -14,12 +14,15 @@ public class ThirdPersonController : MonoBehaviour
     float SpeedSmoothlyVelocity;
     float CurrentSpeed;
 
+    Rigidbody rb;
     Animator anim;
     public Transform cam;
 
 
+
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         anim = GetComponent<Animator>();
        // cam = Camera.main.transform;
     }
@@ -56,6 +59,12 @@ public class ThirdPersonController : MonoBehaviour
             float AnimSpeed = .5f * InputDirection.magnitude;
             anim.SetFloat("Blend", AnimSpeed, SpeedSmoothlyTime, Time.deltaTime);
         }
+
+     /*   if(Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("AM JUMPING");
+            rb.velocity = new Vector3(0 , 100 , 0);
+        } */
 
     }
 }
