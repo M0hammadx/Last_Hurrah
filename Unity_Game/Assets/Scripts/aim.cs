@@ -4,54 +4,78 @@ using UnityEngine;
 
 [RequireComponent(typeof(drawRange))]
 [RequireComponent(typeof(SpriteRenderer))]
-public class aim : MonoBehaviour {
+[RequireComponent(typeof(MeshProvider))]
+public class aim : MonoBehaviour
+{
 
     public Weapon weapon;
 
     public Transform player;
     public Joystick joystick;
+    public GameObject cancelAim;
+
     private drawRange draw;
     private MeshProvider mesh;
     private Transform range;
+    private collisionHandler rangeHandler;
 
     private float chargeTimer = 0;
+    private float coolDown = 0;
+    private float swapCoolDown = 1;
 
     private void Awake()
     {
         draw = GetComponent<drawRange>();
         mesh = GetComponent<MeshProvider>();
-        GetComponent<SpriteRenderer>().sprite = weapon.artwork;
         range = transform.Find("Range");
+        rangeHandler = range.GetComponent<collisionHandler>();
     }
 
-	
-	// Update is called once per frame
-	void Update () {
-        Vector3 moveVector = (Vector3.right * joystick.Horizontal + Vector3.up * joystick.Vertical);
+    public void CancelAim()
+    {
+        chargeTimer = 0;
+    }
 
-        if (moveVector != Vector3.zero)
+    public void SwapWeapon(Weapon newWeapon)
+    {
+        coolDown = swapCoolDown;
+        weapon = newWeapon;
+        GetComponent<SpriteRenderer>().sprite = newWeapon.artwork;
+    }
+
+    void Update()
+    {
+        Vector3 aimVector = (Vector3.right * joystick.Horizontal + Vector3.up * joystick.Vertical);
+        coolDown = Mathf.Max(0, coolDown - Time.deltaTime);
+
+        if (aimVector != Vector3.zero)
         {
-            //TODO check stamina
-            //aim
-            player.rotation = Quaternion.LookRotation(Vector3.forward, moveVector);
-            chargeTimer += Time.deltaTime;
-            chargeTimer = Mathf.Min(chargeTimer, weapon.chargeTime);
-            float ratio = chargeTimer / weapon.chargeTime;
-            draw.RenderArc(weapon.endRange, weapon.endAngle);
-            mesh.RenderMesh(weapon.startRange + (weapon.endRange - weapon.startRange) * ratio, weapon.startAngle + (weapon.endAngle - weapon.startAngle) * ratio);
-            range.gameObject.SetActive(true);
-            draw.lineRenderer.enabled = true;
+            player.rotation = Quaternion.LookRotation(Vector3.forward, aimVector);
+            if (coolDown == 0)
+            {
+                //TODO check stamina
+                chargeTimer += Time.deltaTime;
+                draw.RenderArc(weapon.endRange, weapon.endAngle);
+                mesh.RenderMesh(weapon.GetRange(chargeTimer), weapon.GetAngle(chargeTimer));
+                range.gameObject.SetActive(true);
+                draw.lineRenderer.enabled = true;
+                cancelAim.SetActive(true);
+            }
         }
         else
         {
-            range.gameObject.SetActive(false);
-            draw.lineRenderer.enabled = false;
             if (chargeTimer > 0)
             {
-                //hit
-                float damage = weapon.minDamage + (weapon.maxDamage - weapon.minDamage) * (chargeTimer / weapon.chargeTime);
+                foreach (Targetable target in rangeHandler.GetTargetList())
+                {
+                    target.TakeDamage(weapon.GetDamage(chargeTimer));
+                }
                 chargeTimer = 0;
+                coolDown = weapon.coolDown;
             }
+            range.gameObject.SetActive(false);
+            draw.lineRenderer.enabled = false;
+            cancelAim.SetActive(false);
         }
     }
 }

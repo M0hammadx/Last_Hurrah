@@ -10,23 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a538f5edd74db6f4a89a8d6b1c07865f, type: 3}
-  m_Name: Spear
+  m_Name: Spear 1
   m_EditorClassIdentifier: 
-  name: Spear
-  description: just a spear!
-  artwork: {fileID: 21300000, guid: 01f2d76089cff064b947cf5dfdfe9938, type: 3}
-  startAngle: 15
+  name: Spear 2
+  description: just another spear!
+  artwork: {fileID: 21300000, guid: bc91024d37314154fa6fbae3e4646fda, type: 3}
+  startAngle: 20
   endAngle: 15
   startRange: 0.1
   endRange: 0.5
   minDamage: 40
-  maxDamage: 80
+  maxDamage: 90
   critDamage: 120
   startCrit: 0
   endCrit: 0.3
   overCrit: 0
-  startMiss: 0.9
-  endMiss: 0.4
+  startMiss: 0.7
+  endMiss: 0.1
   manaCost: 10
   coolDown: 1
   chargeTime: 1

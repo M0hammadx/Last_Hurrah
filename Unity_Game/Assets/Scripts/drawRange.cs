@@ -24,8 +24,8 @@ public class drawRange : MonoBehaviour {
         Vector3[] vertices = CalculateArcArray(radius, angle);
         for (int i = 0; i < vertices.Length; i++)
         {
-            vertices[i].x -= 0.07f;
-            vertices[i].y -= 0.07f;
+            vertices[i].x -= 0.067f;
+            vertices[i].y -= 0.067f;
         }
         lineRenderer.SetPositions(vertices);
     }
